@@ -1,11 +1,14 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import path from 'path';
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
+
+const _dirname = path.resolve();
 
 // Sample list of coupons
 const coupons = ['COUPON1', 'COUPON2', 'COUPON3', 'COUPON4'];
@@ -40,6 +43,11 @@ app.post('/api/claim', (req, res) => {
 
     res.json({ success: true, coupon: assignedCoupon });
 });
+
+app.use(express.static(path.join(_dirname,"/frontend/dist")))
+app.get("*",(_,res)=>{
+    res.sendFile(path.resolve(_dirname,"frontend","dist","index.html"));
+})
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
